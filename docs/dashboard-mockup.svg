@@ -1,139 +1,215 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 760" width="1140" height="760" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Mock-up of the cuscope Azure Workbook: Overview tab with KPI tiles, smoothed utilisation chart, top contributors and harvester health. Illustrative data.">
-  <rect width="1140" height="760" fill="#f3f4f6"/>
-
-  <!-- Header -->
-  <text x="30" y="46" font-size="24" font-weight="700" fill="#111827">Fabric CU attribution</text>
-  <text x="30" y="68" font-size="13" fill="#6b7280">Read from the Capacity Metrics model by the cuscope harvester, outside Fabric. CU figures are CU-seconds.</text>
-  <rect x="930" y="28" width="180" height="26" rx="13" fill="#fef3c7"/>
-  <text x="1020" y="46" font-size="12" font-weight="600" fill="#92400e" text-anchor="middle">Mock-up · illustrative data</text>
-
-  <!-- Parameters -->
-  <g font-size="12" fill="#374151">
-    <text x="30" y="96" fill="#6b7280">Capacity</text>
-    <rect x="30" y="102" width="260" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
-    <text x="42" y="122">fabric-prod (F64)</text><text x="272" y="122" fill="#9ca3af">▾</text>
-    <text x="310" y="96" fill="#6b7280">Time range</text>
-    <rect x="310" y="102" width="180" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
-    <text x="322" y="122">Last 24 hours</text><text x="472" y="122" fill="#9ca3af">▾</text>
-    <text x="510" y="96" fill="#6b7280">Explain window (or brush the chart)</text>
-    <rect x="510" y="102" width="300" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
-    <text x="522" y="122">14:00 → 16:30 today</text>
-  </g>
-
-  <!-- Tabs -->
-  <g font-size="13">
-    <rect x="30" y="148" width="1080" height="34" rx="6" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="34" y="152" width="96" height="26" rx="4" fill="#dbeafe"/>
-    <text x="82" y="170" text-anchor="middle" font-weight="600" fill="#1d4ed8">Overview</text>
-    <text x="212" y="170" text-anchor="middle" fill="#4b5563">Explain a window</text>
-    <text x="337" y="170" text-anchor="middle" fill="#4b5563">24h background</text>
-    <text x="474" y="170" text-anchor="middle" fill="#4b5563">Root cause by run time</text>
-    <text x="620" y="170" text-anchor="middle" fill="#4b5563">Daily changes</text>
-    <text x="715" y="170" text-anchor="middle" fill="#4b5563">Details</text>
-  </g>
-
-  <!-- KPI tiles: the six tiles of the real workbook's "Summary for the time range" -->
-  <g font-size="12">
-    <rect x="30" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="44" y="236" width="4" height="30" fill="#38bdf8"/>
-    <text x="44" y="222" fill="#6b7280">Average utilisation (%)</text>
-    <text x="56" y="264" font-size="30" font-weight="700" fill="#111827">58.2</text>
-
-    <rect x="212" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="226" y="236" width="4" height="30" fill="#8b5cf6"/>
-    <text x="226" y="222" fill="#6b7280">Peak utilisation (%)</text>
-    <text x="238" y="264" font-size="30" font-weight="700" fill="#111827">87.4</text>
-
-    <rect x="394" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="408" y="236" width="4" height="30" fill="#2dd4bf"/>
-    <text x="408" y="222" fill="#6b7280">Timepoints over 100%</text>
-    <text x="420" y="264" font-size="30" font-weight="700" fill="#111827">0</text>
-
-    <rect x="576" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="590" y="236" width="4" height="30" fill="#fb923c"/>
-    <text x="590" y="222" fill="#6b7280">Background, last 24 h (%)</text>
-    <text x="602" y="264" font-size="30" font-weight="700" fill="#111827">61.0</text>
-
-    <rect x="758" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="772" y="236" width="4" height="30" fill="#2563eb"/>
-    <text x="772" y="222" fill="#6b7280">Harvest errors (24 h)</text>
-    <text x="784" y="264" font-size="30" font-weight="700" fill="#111827">0</text>
-
-    <rect x="940" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
-    <rect x="954" y="236" width="4" height="30" fill="#9ca3af"/>
-    <text x="954" y="222" fill="#6b7280">Minutes since last harvest</text>
-    <text x="966" y="264" font-size="30" font-weight="700" fill="#111827">3</text>
-  </g>
-
-  <!-- Utilisation chart card -->
-  <rect x="30" y="296" width="1080" height="224" rx="8" fill="#fff" stroke="#e5e7eb"/>
-  <text x="46" y="320" font-size="14" font-weight="600" fill="#111827">Smoothed utilisation: background and interactive, reconstructed vs the app</text>
-  <text x="46" y="338" font-size="12" fill="#6b7280">Drag across the chart to set the explain window.</text>
-
-  <!-- axes -->
-  <g stroke="#e5e7eb" stroke-width="1">
-    <line x1="90" y1="470" x2="1050" y2="470"/>
-    <line x1="90" y1="380" x2="1050" y2="380"/>
-  </g>
-  <line x1="90" y1="290" x2="1050" y2="290" stroke="#dc2626" stroke-dasharray="5 4"/>
-  <text x="1054" y="294" font-size="11" fill="#dc2626">100%</text>
-  <g font-size="11" fill="#6b7280" text-anchor="end">
-    <text x="82" y="474">0%</text>
-    <text x="82" y="384">50%</text>
-  </g>
-  <g font-size="11" fill="#6b7280" text-anchor="middle">
-    <text x="90" y="490">00:00</text><text x="250" y="490">04:00</text><text x="410" y="490">08:00</text>
-    <text x="570" y="490">12:00</text><text x="730" y="490">16:00</text><text x="890" y="490">20:00</text><text x="1050" y="490">24:00</text>
-  </g>
-
-  <!-- background area (blue) -->
-  <path d="M90,470 L90,401.6 L170,398 L250,394.4 L330,396.2 L410,389 L490,380 L570,376.4 L650,371 L730,369.2 L810,371 L890,374.6 L970,380 L1050,383.6 L1050,470 Z" fill="#2563eb" fill-opacity="0.35"/>
-  <!-- interactive area (orange) stacked on background -->
-  <path d="M90,401.6 L170,398 L250,394.4 L330,390.8 L410,378.2 L490,362 L570,351.2 L650,317 L730,313.4 L810,335 L890,358.4 L970,371 L1050,378.2 L1050,383.6 L970,380 L890,374.6 L810,371 L730,369.2 L650,371 L570,376.4 L490,380 L410,389 L330,396.2 L250,394.4 L170,398 L90,401.6 Z" fill="#f59e0b" fill-opacity="0.55"/>
-  <!-- app-reported utilisation (dashed) -->
-  <polyline points="90,398 170,394.4 250,390.8 330,390.8 410,378.2 490,362 570,351.2 650,317 730,313.4 810,335 890,358.4 970,371 1050,378.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <!-- brushed explain window -->
-  <rect x="640" y="290" width="110" height="180" fill="#2563eb" fill-opacity="0.12" stroke="#2563eb" stroke-dasharray="3 3"/>
-  <text x="695" y="304" font-size="11" fill="#1d4ed8" text-anchor="middle">explain window</text>
-
-  <!-- legend -->
-  <g font-size="11" fill="#374151">
-    <rect x="46" y="504" width="12" height="8" fill="#2563eb" fill-opacity="0.5"/><text x="64" y="512">Background (smoothed over 24 h)</text>
-    <rect x="260" y="504" width="12" height="8" fill="#f59e0b" fill-opacity="0.7"/><text x="278" y="512">Interactive (5–64 min window)</text>
-    <line x1="460" y1="508" x2="480" y2="508" stroke="#111827" stroke-dasharray="4 3" stroke-width="1.5"/><text x="486" y="512">Capacity Metrics app</text>
-  </g>
-
-  <!-- Top contributors card -->
-  <rect x="30" y="536" width="530" height="200" rx="8" fill="#fff" stroke="#e5e7eb"/>
-  <text x="46" y="560" font-size="14" font-weight="600" fill="#111827">Top contributors in the explain window</text>
-  <g font-size="12" fill="#374151">
-    <text x="46" y="590">nb_daily_etl (Spark)</text>
-    <rect x="190" y="578" width="304" height="16" rx="3" fill="#2563eb"/><text x="500" y="591">38%</text>
-    <text x="46" y="620">pl_wh_queries (pipeline)</text>
-    <rect x="190" y="608" width="192" height="16" rx="3" fill="#2563eb"/><text x="388" y="621">24%</text>
-    <text x="46" y="650">sm_sales (semantic model)</text>
-    <rect x="190" y="638" width="136" height="16" rx="3" fill="#f59e0b"/><text x="332" y="651">17%</text>
-    <text x="46" y="680">wh_sales (warehouse)</text>
-    <rect x="190" y="668" width="88" height="16" rx="3" fill="#2563eb"/><text x="284" y="681">11%</text>
-    <text x="46" y="710">all other items</text>
-    <rect x="190" y="698" width="80" height="16" rx="3" fill="#9ca3af"/><text x="276" y="711">10%</text>
-  </g>
-
-  <!-- Harvester health card -->
-  <rect x="580" y="536" width="530" height="200" rx="8" fill="#fff" stroke="#e5e7eb"/>
-  <text x="596" y="560" font-size="14" font-weight="600" fill="#111827">Harvester health (last 24 h)</text>
-  <g font-size="12" fill="#6b7280">
-    <text x="596" y="586">job</text><text x="760" y="586">runs</text><text x="880" y="586">rows</text><text x="1000" y="586">errors</text>
-  </g>
-  <line x1="596" y1="594" x2="1094" y2="594" stroke="#e5e7eb"/>
-  <g font-size="12" fill="#374151">
-    <text x="596" y="618">interactive</text><text x="760" y="618">576</text><text x="880" y="618">41,230</text>
-    <circle cx="1008" cy="614" r="5" fill="#16a34a"/><text x="1020" y="618">0</text>
-    <text x="596" y="646">background</text><text x="760" y="646">48</text><text x="880" y="646">18,904</text>
-    <circle cx="1008" cy="642" r="5" fill="#16a34a"/><text x="1020" y="646">0</text>
-    <text x="596" y="674">timepoints</text><text x="760" y="674">48</text><text x="880" y="674">2,880</text>
-    <circle cx="1008" cy="670" r="5" fill="#16a34a"/><text x="1020" y="674">0</text>
-    <text x="596" y="702">enrich</text><text x="760" y="702">48</text><text x="880" y="702">212</text>
-    <circle cx="1008" cy="698" r="5" fill="#f59e0b"/><text x="1020" y="702">1 · pyodbc</text>
-  </g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1150" width="1000" height="1150" font-family="Segoe UI, -apple-system, Helvetica, Arial, sans-serif" role="img" aria-label="Mock-up of the cuscope Azure Workbook Overview tab: summary tiles, smoothed utilisation chart, top contributors and harvester health. Illustrative data.">
+<rect x="0.0" y="0.0" width="1000.0" height="1150.0" rx="0" fill="#ffffff" stroke="none" stroke-width="1" />
+<text x="30.0" y="34.0" font-size="18" fill="#323130" font-weight="600" text-anchor="start" >cuscope - Fabric CU attribution</text>
+<text x="292.0" y="34.0" font-size="18" fill="#605e5c" font-weight="400" text-anchor="start" >| Workbook</text>
+<text x="30.0" y="49.0" font-size="9.5" fill="#605e5c" font-weight="400" text-anchor="start" >Azure Workbook</text>
+<rect x="800.0" y="18.0" width="170.0" height="22.0" rx="11" fill="#fff4ce" stroke="none" stroke-width="1" />
+<text x="885.0" y="33.0" font-size="10.5" fill="#8a6d00" font-weight="600" text-anchor="middle" >Mock-up · illustrative data</text>
+<text x="30.0" y="84.0" font-size="14" fill="#323130" font-weight="600" text-anchor="start" >Fabric CU attribution</text>
+<text x="30.0" y="104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >Read from the Capacity Metrics model by the cuscope harvester (outside Fabric). CU figures are CU-seconds; percentages are of the capacity's base budget.</text>
+<rect x="30.0" y="118.0" width="196.0" height="26.0" rx="13" fill="#e5f1fb" stroke="#0f6cbd" stroke-width="1" />
+<text x="42.0" y="135.0" font-size="10.5" fill="#323130" font-weight="400" text-anchor="start" >Capacity:</text>
+<rect x="94.0" y="123.0" width="124.0" height="16.0" rx="2" fill="#ffffff" stroke="#8a8886" stroke-width="1" />
+<text x="99.0" y="135.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >fabric-dev (F2)</text>
+<text x="209.0" y="135.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >⌄</text>
+<rect x="236.0" y="118.0" width="166.0" height="26.0" rx="13" fill="#ebf3fc" stroke="none" stroke-width="1" />
+<text x="248.0" y="135.0" font-size="10.5" fill="#323130" font-weight="400" text-anchor="start" >Time range:</text>
+<text x="310.0" y="135.0" font-size="10.5" fill="#323130" font-weight="600" text-anchor="start" >Last 24 hours</text>
+<text x="388.0" y="135.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >⌄</text>
+<rect x="412.0" y="118.0" width="210.0" height="26.0" rx="13" fill="#ebf3fc" stroke="none" stroke-width="1" />
+<text x="424.0" y="135.0" font-size="10.5" fill="#323130" font-weight="400" text-anchor="start" >Explain window (or brus… :</text>
+<text x="556.0" y="135.0" font-size="10.5" fill="#323130" font-weight="600" text-anchor="start" >Last hour</text>
+<text x="608.0" y="135.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >⌄</text>
+<text x="30.0" y="172.0" font-size="11.5" fill="#323130" font-weight="600" text-anchor="start" >Overview</text>
+<line x1="30.0" y1="180.0" x2="82.0" y2="180.0" stroke="#0f6cbd" stroke-width="2" />
+<text x="100.0" y="172.0" font-size="11.5" fill="#323130" font-weight="400" text-anchor="start" >Explain a window</text>
+<text x="208.0" y="172.0" font-size="11.5" fill="#323130" font-weight="400" text-anchor="start" >24h background</text>
+<text x="306.0" y="172.0" font-size="11.5" fill="#323130" font-weight="400" text-anchor="start" >Root cause by run time</text>
+<text x="441.0" y="172.0" font-size="11.5" fill="#323130" font-weight="400" text-anchor="start" >Daily changes</text>
+<text x="530.0" y="172.0" font-size="11.5" fill="#323130" font-weight="400" text-anchor="start" >Details</text>
+<text x="30.0" y="210.0" font-size="11.5" fill="#323130" font-weight="600" text-anchor="start" >Summary for the time range</text>
+<rect x="38.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="44.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Average utilisation (%)</text>
+<rect x="44.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#3abff0" stroke="none" stroke-width="1" />
+<text x="53.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >57.4</text>
+<rect x="174.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="180.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Peak utilisation (%)</text>
+<rect x="180.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#8661c5" stroke="none" stroke-width="1" />
+<text x="189.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >61.9</text>
+<rect x="310.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="316.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Timepoints over 100%</text>
+<rect x="316.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#4bd6c4" stroke="none" stroke-width="1" />
+<text x="325.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >0</text>
+<rect x="446.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="452.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Background, last 24 h (…</text>
+<rect x="452.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#e8825b" stroke="none" stroke-width="1" />
+<text x="461.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >55.6</text>
+<rect x="582.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="588.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Harvest errors (24 h)</text>
+<rect x="588.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#0f6cbd" stroke="none" stroke-width="1" />
+<text x="597.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >0</text>
+<rect x="718.0" y="222.0" width="126.0" height="52.0" rx="0" fill="#ffffff" stroke="#c8c6c4" stroke-width="1" />
+<text x="724.0" y="237.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Minutes since last harvest</text>
+<rect x="724.0" y="246.0" width="4.0" height="22.0" rx="0" fill="#a19f9d" stroke="none" stroke-width="1" />
+<text x="733.0" y="266.0" font-size="22" fill="#323130" font-weight="400" text-anchor="start" >2</text>
+<text x="30.0" y="306.0" font-size="9.5" fill="#323130" font-weight="600" text-anchor="start" >Smoothed utilisation: background and interactive (reconstructed) vs the app. The red line is the throttling threshold. Drag across the chart to set the explain window.</text>
+<line x1="70.0" y1="530.0" x2="640.0" y2="530.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="533.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >0</text>
+<line x1="70.0" y1="496.7" x2="640.0" y2="496.7" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="499.7" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >20</text>
+<line x1="70.0" y1="463.3" x2="640.0" y2="463.3" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="466.3" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >40</text>
+<line x1="70.0" y1="430.0" x2="640.0" y2="430.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="433.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >60</text>
+<line x1="70.0" y1="396.7" x2="640.0" y2="396.7" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="399.7" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >80</text>
+<line x1="70.0" y1="363.3" x2="640.0" y2="363.3" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="366.3" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >100</text>
+<line x1="70.0" y1="330.0" x2="640.0" y2="330.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="333.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >120</text>
+<line x1="70.0" y1="530.0" x2="640.0" y2="530.0" stroke="#c8c6c4" stroke-width="1" />
+<polyline points="70.0,363.3 640.0,363.3" fill="none" stroke="#e81123" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="70.0,438.0 93.8,437.3 117.5,436.8 141.2,436.5 165.0,436.7 188.8,437.0 212.5,437.5 236.2,437.2 260.0,436.3 283.8,435.3 307.5,434.8 331.2,435.0 355.0,435.7 378.8,436.2 402.5,436.7 426.2,437.2 450.0,436.8 473.8,436.0 497.5,435.2 521.2,434.7 545.0,435.3 568.8,436.5 592.5,437.3 616.2,437.8 640.0,438.2" fill="none" stroke="#3a96dd" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="70.0,529.3 93.8,529.5 117.5,529.7 141.2,529.7 165.0,529.7 188.8,529.5 212.5,529.0 236.2,528.2 260.0,526.0 283.8,524.8 307.5,525.3 331.2,527.3 355.0,526.3 378.8,524.3 402.5,525.2 426.2,527.0 450.0,528.0 473.8,528.5 497.5,528.8 521.2,529.2 545.0,529.3 568.8,529.5 592.5,529.3 616.2,529.0 640.0,529.2" fill="none" stroke="#ff8c00" stroke-width="1.5" stroke-linejoin="round"/>
+<polyline points="70.0,437.3 93.8,436.8 117.5,436.5 141.2,436.2 165.0,436.3 188.8,436.5 212.5,436.5 236.2,435.3 260.0,432.3 283.8,430.2 307.5,430.2 331.2,432.3 355.0,432.0 378.8,430.5 402.5,431.8 426.2,434.2 450.0,434.8 473.8,434.5 497.5,434.0 521.2,433.8 545.0,434.7 568.8,436.0 592.5,436.7 616.2,436.8 640.0,437.3" fill="none" stroke="#a19f9d" stroke-width="2.5" stroke-linejoin="round"/>
+<polyline points="70.0,437.2 93.8,436.9 117.5,436.4 141.2,436.2 165.0,436.4 188.8,436.4 212.5,436.5 236.2,435.4 260.0,432.2 283.8,430.2 307.5,430.1 331.2,432.4 355.0,432.0 378.8,430.4 402.5,431.9 426.2,434.1 450.0,434.9 473.8,434.4 497.5,434.1 521.2,433.8 545.0,434.7 568.8,436.0 592.5,436.6 616.2,436.9 640.0,437.3" fill="none" stroke="#13a10e" stroke-width="1.2" stroke-linejoin="round"/>
+<path d="M65.0,539 L70.0,531 L75.0,539 Z" fill="#605e5c"/>
+<path d="M635.0,539 L640.0,531 L645.0,539 Z" fill="#605e5c"/>
+<text x="188.8" y="550.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="middle" >Oct 28</text>
+<text x="331.2" y="550.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="middle" >6 AM</text>
+<text x="473.8" y="550.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="middle" >12 PM</text>
+<text x="616.2" y="550.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="middle" >6 PM</text>
+<rect x="70.0" y="563.0" width="8.0" height="8.0" rx="0" fill="#3a96dd" stroke="none" stroke-width="1" />
+<text x="82.0" y="571.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Background %</text>
+<rect x="161.2" y="563.0" width="8.0" height="8.0" rx="0" fill="#ff8c00" stroke="none" stroke-width="1" />
+<text x="173.2" y="571.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Interactive %</text>
+<rect x="258.0" y="563.0" width="8.0" height="8.0" rx="0" fill="#13a10e" stroke="none" stroke-width="1" />
+<text x="270.0" y="571.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >App utilisation %</text>
+<rect x="377.2" y="563.0" width="8.0" height="8.0" rx="0" fill="#a19f9d" stroke="none" stroke-width="1" />
+<text x="389.2" y="571.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Reconstructed total %</text>
+<rect x="518.8" y="563.0" width="8.0" height="8.0" rx="0" fill="#e81123" stroke="none" stroke-width="1" />
+<text x="530.8" y="571.0" font-size="9.5" fill="#323130" font-weight="400" text-anchor="start" >Throttle limit %</text>
+<text x="30.0" y="610.0" font-size="11.5" fill="#323130" font-weight="600" text-anchor="start" >Top contributors in the explain window</text>
+<line x1="70.0" y1="760.0" x2="640.0" y2="760.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="763.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >0K</text>
+<line x1="70.0" y1="727.5" x2="640.0" y2="727.5" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="730.5" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >0.5K</text>
+<line x1="70.0" y1="695.0" x2="640.0" y2="695.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="698.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >1K</text>
+<line x1="70.0" y1="662.5" x2="640.0" y2="662.5" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="665.5" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >1.5K</text>
+<line x1="70.0" y1="630.0" x2="640.0" y2="630.0" stroke="#edebe9" stroke-width="1" />
+<text x="62.0" y="633.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="end" >2K</text>
+<rect x="100.5" y="649.5" width="34.0" height="110.5" rx="0" fill="#6378f0" stroke="none" stroke-width="1" />
+<text x="125.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 125.5 772)">wh_loadgen (background)</text>
+<rect x="195.5" y="676.8" width="34.0" height="83.2" rx="0" fill="#e3008c" stroke="none" stroke-width="1" />
+<text x="220.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 220.5 772)">lh_loadgen (background)</text>
+<rect x="290.5" y="687.9" width="34.0" height="72.1" rx="0" fill="#2aa0a4" stroke="none" stroke-width="1" />
+<text x="315.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 315.5 772)">sm_loadgen (interactive)</text>
+<rect x="385.5" y="697.5" width="34.0" height="62.5" rx="0" fill="#9373c0" stroke="none" stroke-width="1" />
+<text x="410.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 410.5 772)">pl_copy_foreach (background)</text>
+<rect x="480.5" y="754.5" width="34.0" height="5.5" rx="0" fill="#13a10e" stroke="none" stroke-width="1" />
+<text x="505.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 505.5 772)">pl_wh_queries (background)</text>
+<rect x="575.5" y="755.5" width="34.0" height="4.5" rx="0" fill="#3a96dd" stroke="none" stroke-width="1" />
+<text x="600.5" y="772.0" font-size="8" fill="#605e5c" font-weight="400" text-anchor="end" transform="rotate(-25 600.5 772)">nb_spark_events (background)</text>
+<text x="36.0" y="832.0" font-size="9" fill="#605e5c" font-weight="400" text-anchor="start" >⌃</text>
+<text x="32.0" y="845.0" font-size="8.5" fill="#605e5c" font-weight="400" text-anchor="start" >1/2</text>
+<text x="36.0" y="857.0" font-size="9" fill="#605e5c" font-weight="400" text-anchor="start" >⌄</text>
+<rect x="58.0" y="822.0" width="3.0" height="34.0" rx="0" fill="#6378f0" stroke="none" stroke-width="1" />
+<text x="65.0" y="831.0" font-size="8" fill="#323130" font-weight="400" text-anchor="start" >wh_loadgen (background)</text>
+<text x="65.0" y="856.0" font-size="24" fill="#323130" font-weight="400" text-anchor="start" >1.7</text>
+<text x="99.0" y="856.0" font-size="11" fill="#323130" font-weight="600" text-anchor="start" >K</text>
+<rect x="183.0" y="822.0" width="3.0" height="34.0" rx="0" fill="#e3008c" stroke="none" stroke-width="1" />
+<text x="190.0" y="831.0" font-size="8" fill="#323130" font-weight="400" text-anchor="start" >lh_loadgen (background)</text>
+<text x="190.0" y="856.0" font-size="24" fill="#323130" font-weight="400" text-anchor="start" >1.28</text>
+<text x="237.0" y="856.0" font-size="11" fill="#323130" font-weight="600" text-anchor="start" >K</text>
+<rect x="308.0" y="822.0" width="3.0" height="34.0" rx="0" fill="#2aa0a4" stroke="none" stroke-width="1" />
+<text x="315.0" y="831.0" font-size="8" fill="#323130" font-weight="400" text-anchor="start" >sm_loadgen (interactive)</text>
+<text x="315.0" y="856.0" font-size="24" fill="#323130" font-weight="400" text-anchor="start" >1.11</text>
+<text x="362.0" y="856.0" font-size="11" fill="#323130" font-weight="600" text-anchor="start" >K</text>
+<rect x="433.0" y="822.0" width="3.0" height="34.0" rx="0" fill="#9373c0" stroke="none" stroke-width="1" />
+<text x="440.0" y="831.0" font-size="8" fill="#323130" font-weight="400" text-anchor="start" >pl_copy_foreach (backgro…</text>
+<text x="440.0" y="856.0" font-size="24" fill="#323130" font-weight="400" text-anchor="start" >962</text>
+<text x="30.0" y="892.0" font-size="11.5" fill="#323130" font-weight="600" text-anchor="start" >Harvester health (last 24 h). Errors should be 0.</text>
+<rect x="30.0" y="902.0" width="940.0" height="22.0" rx="2" fill="#ffffff" stroke="#8a8886" stroke-width="1" />
+<text x="40.0" y="917.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >⌕  Search</text>
+<text x="38.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >job</text>
+<text x="128.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >capacity_id</text>
+<text x="300.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >table_name</text>
+<text x="420.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >runs</text>
+<text x="480.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >errors</text>
+<text x="548.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >empty</text>
+<text x="610.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >rows</text>
+<text x="700.0" y="946.0" font-size="10" fill="#323130" font-weight="600" text-anchor="start" >last_run</text>
+<line x1="30.0" y1="954.0" x2="970.0" y2="954.0" stroke="#c8c6c4" stroke-width="1" />
+<text x="38.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >background</text>
+<text x="128.0" y="972.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >background</text>
+<text x="450.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >48</text>
+<rect x="480.0" y="960.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="972.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >0</text>
+<text x="660.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >654,913</text>
+<text x="700.0" y="972.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:32 PM</text>
+<line x1="30.0" y1="980.0" x2="970.0" y2="980.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >interactive</text>
+<text x="128.0" y="994.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >interactive</text>
+<text x="450.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >288</text>
+<rect x="480.0" y="982.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="994.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >0</text>
+<text x="660.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >41,230</text>
+<text x="700.0" y="994.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:55 PM</text>
+<line x1="30.0" y1="1002.0" x2="970.0" y2="1002.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >timepoints</text>
+<text x="128.0" y="1016.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >timepoints</text>
+<text x="450.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >24</text>
+<rect x="480.0" y="1004.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="1016.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >0</text>
+<text x="660.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >2,880</text>
+<text x="700.0" y="1016.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:25 PM</text>
+<line x1="30.0" y1="1024.0" x2="970.0" y2="1024.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >enrich</text>
+<text x="128.0" y="1038.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >jobs</text>
+<text x="450.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >96</text>
+<rect x="480.0" y="1026.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="1038.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >12</text>
+<text x="660.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >1,184</text>
+<text x="700.0" y="1038.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:52 PM</text>
+<line x1="30.0" y1="1046.0" x2="970.0" y2="1046.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >enrich</text>
+<text x="128.0" y="1060.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >spark</text>
+<text x="450.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >96</text>
+<rect x="480.0" y="1048.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="1060.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >31</text>
+<text x="660.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >212</text>
+<text x="700.0" y="1060.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:52 PM</text>
+<line x1="30.0" y1="1068.0" x2="970.0" y2="1068.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >enrich</text>
+<text x="128.0" y="1082.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >warehouse</text>
+<text x="450.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >96</text>
+<rect x="480.0" y="1070.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="1082.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >0</text>
+<text x="660.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >3,977</text>
+<text x="700.0" y="1082.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:52 PM</text>
+<line x1="30.0" y1="1090.0" x2="970.0" y2="1090.0" stroke="#edebe9" stroke-width="1" />
+<text x="38.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >dimensions</text>
+<text x="128.0" y="1104.0" font-size="10" fill="#605e5c" font-weight="400" text-anchor="start" >c0ffee00-…-5e1d</text>
+<text x="300.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >items</text>
+<text x="450.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >4</text>
+<rect x="480.0" y="1092.0" width="40.0" height="16.0" rx="0" fill="#107c10" stroke="none" stroke-width="1" />
+<text x="500.0" y="1104.0" font-size="10" fill="#ffffff" font-weight="600" text-anchor="middle" >0</text>
+<text x="575.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >0</text>
+<text x="660.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="end" >26</text>
+<text x="700.0" y="1104.0" font-size="10" fill="#323130" font-weight="400" text-anchor="start" >10/28/2026, 6:10 PM</text>
+<line x1="30.0" y1="1112.0" x2="970.0" y2="1112.0" stroke="#edebe9" stroke-width="1" />
 </svg>
