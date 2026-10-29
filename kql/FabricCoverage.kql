@@ -1,0 +1,5 @@
+// Spec 6.3 coverage metric: share of interactive operations seen in at least two samples.
+FabricOps_CL
+| where class == "interactive" and sample_timepoint >= t0 and sample_timepoint < t1
+| summarize samples = dcount(sample_timepoint) by capacity_id, operation_id
+| summarize ops = count(), seen_twice_pct = round(100.0 * countif(samples >= 2) / count(), 1) by capacity_id

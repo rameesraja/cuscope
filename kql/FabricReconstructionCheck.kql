@@ -1,0 +1,33 @@
+// Spec 6.6 validation: reconstructed smoothed utilisation vs the model's TimePoints, per
+// harvested timepoint. diff_pct beyond 1-2 points means missed operations or an unmodelled rule.
+// The model's [Avg utilization %] is a ratio, so it is scaled x100 here. Values far above 100
+// on a single timepoint are the pause flush (all remaining smoothed CU charged at pause).
+// Background: rolling 24 h sum by smoothing start (series_fir over 30 s steps). Interactive:
+// each operation spread evenly over its own window. Both avoid a timepoint x operation join,
+// which runs out of memory beyond a few hours.
+let sku = toscalar(FabricSkuCu(cap));
+let tps = FabricTimepoints_CL
+    | where capacity_id =~ cap and timepoint >= t0 and timepoint < t1
+    | summarize arg_max(TimeGenerated, metrics) by timepoint
+    | project timepoint, model_pct = todouble(metrics.cu_ratio) * 100.0;
+let ops = FabricOpsLatest() | where capacity_id == cap;
+let bg = ops
+    | where class == "background" and smoothing_start between ((t0 - 24h) .. t1)
+    | make-series cu = sum(total_cu_s) default = 0 on smoothing_start from bin(t0 - 24h, 30s) to t1 step 30s
+    | extend roll = series_fir(cu, repeat(1, 2880), false, false)
+    | mv-expand timepoint = smoothing_start to typeof(datetime), roll to typeof(double)
+    | project timepoint, bg_cu_s = roll / 2880.0;
+let it = ops
+    | where class == "interactive" and smoothing_end > t0 and smoothing_start < t1
+    | extend n = toint(n_tp)
+    | mv-expand k = range(0, n - 1, 1) to typeof(int)
+    | extend timepoint = smoothing_start + k * 30s
+    | where timepoint >= t0 and timepoint < t1
+    | summarize it_cu_s = sum(total_cu_s / n_tp) by timepoint = bin(timepoint, 30s);
+tps
+| join kind=leftouter bg on timepoint
+| join kind=leftouter it on timepoint
+| extend recon_pct = round(100.0 * (coalesce(bg_cu_s, 0.0) + coalesce(it_cu_s, 0.0)) / (todouble(sku) * 30.0), 2)
+| extend diff_pct = round(recon_pct - model_pct, 2)
+| project timepoint, model_pct, recon_pct, diff_pct
+| order by timepoint asc

@@ -1,0 +1,11 @@
+DEFINE MPARAMETER 'RegionName' = "Default"
+EVALUATE
+SELECTCOLUMNS(
+    'Capacities',
+    "capacity_id", 'Capacities'[Capacity Id],
+    "capacity_name", 'Capacities'[Capacity name],
+    "sku", 'Capacities'[SKU],
+    "region", 'Capacities'[Region without default],
+    "state", 'Capacities'[State],
+    "owners", 'Capacities'[Owners]
+)

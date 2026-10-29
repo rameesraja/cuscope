@@ -1,0 +1,32 @@
+// One row per operation row (spec 6.5 'ops'). Operation Id is not unique: warehouse and SQL
+// endpoint rows share one Id across items, operations and billing intervals, so keying on the
+// Id alone dropped about 17 points of utilisation from 2026-10-05. A row is keyed on the Id plus
+// the fields that separate those rows, plus Total CU. Total CU is the same in every sample for
+// more than 99.9% of rows; where it grew between samples, only the version seen in the latest
+// sample for that key is kept. operation_id stays as the join key to Livy and Power BI logs.
+// The detail tables carry item IDs only; names come from the daily Items snapshot.
+// IDs are upper-cased because the metrics model and the Fabric REST API differ in case.
+let items = FabricItems_CL
+    | summarize arg_max(TimeGenerated, item_name, item_kind, workspace_name) by item_key = toupper(item_id);
+let rows = FabricOps_CL
+    | extend row_key = strcat(operation_id, '|', operation, '|', toupper(item_id), '|', tostring(start_time), '|',
+                              tostring(smoothing_start), '|', tostring(total_cu_s))
+    | extend key = strcat(operation_id, '|', operation, '|', toupper(item_id), '|', tostring(start_time), '|',
+                          tostring(smoothing_start))
+    | summarize arg_max(sample_timepoint, *),
+                sample_count = dcount(sample_timepoint),
+                first_seen = min(sample_timepoint),
+                last_seen = max(sample_timepoint)
+        by capacity_id, row_key;
+rows
+| join kind=inner (rows | summarize key_last_seen = max(last_seen) by capacity_id, key) on capacity_id, key
+| where last_seen == key_last_seen
+| project-away capacity_id1, key1, key_last_seen, key
+| extend item_id = toupper(item_id), workspace_id = toupper(workspace_id)
+| join kind=leftouter items on $left.item_id == $right.item_key
+| extend item_name = coalesce(item_name, item_name1, item_id),
+         item_kind = coalesce(item_kind, item_kind1),
+         workspace_name = coalesce(workspace_name, workspace_name1, workspace_id)
+| project-away item_key, item_name1, item_kind1, workspace_name1, TimeGenerated1
+| extend smoothing_end_eff = iff(class == "background", smoothing_start + 24h, smoothing_end)
+| extend n_tp = iff(class == "background", 2880.0, max_of(1.0, todouble((smoothing_end - smoothing_start) / 30s)))

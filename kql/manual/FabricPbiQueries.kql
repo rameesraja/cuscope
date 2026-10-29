@@ -1,0 +1,17 @@
+// Spec 5.1: Power BI operations joined to Azure Log Analytics for Power BI on
+// Operation Id = XmlaRequestId. Save as a function (params: cap:string, t0:datetime, t1:datetime)
+// only after a Fabric workspace is connected to this Log Analytics workspace, because
+// PowerBIDatasetsWorkspace does not exist before then.
+let pbi = PowerBIDatasetsWorkspace
+    | where TimeGenerated between (t0 - 1h .. t1 + 1h)
+    | where OperationName in ("QueryEnd", "CommandEnd", "ProgressReportEnd")
+    | summarize arg_max(TimeGenerated, OperationName, ExecutingUser, ApplicationName, ArtifactName,
+                        EventText, CpuTimeMs, DurationMs)
+        by xmla_key = tolower(XmlaRequestId);
+FabricOpsLatest()
+| where capacity_id == cap and start_time >= t0 and start_time < t1 and item_kind =~ "SemanticModel"
+| extend xmla_key = tolower(operation_id)
+| join kind=leftouter pbi on xmla_key
+| project start_time, item_name, operation, user_name, total_cu_s, matched = isnotempty(OperationName),
+          ExecutingUser, ApplicationName, CpuTimeMs, DurationMs, query_text = substring(EventText, 0, 500)
+| order by total_cu_s desc

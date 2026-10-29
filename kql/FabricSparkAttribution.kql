@@ -1,0 +1,19 @@
+// Spec 5.2: Spark operations joined to Livy sessions on Operation Id = livyId, with a
+// cores x duration estimate. 'matched' false everywhere means the id link is broken in this
+// tenant (risk in spec 8); fall back to item + time matching.
+let sessions = FabricSparkSessions_CL
+    | summarize arg_max(TimeGenerated, *) by livy_id
+    | project livy_key = tolower(livy_id), livy_id, submitter_id, job_instance_id,
+              driver_cores, executor_cores, num_executors, dynamic_allocation, dyn_max_executors,
+              is_high_concurrency, queued_s, running_s;
+FabricOpsLatest()
+| where capacity_id == cap and coalesce(end_time, start_time) >= t0 and start_time < t1
+    and item_kind in~ ("Notebook", "SynapseNotebook", "SparkJobDefinition")
+| extend livy_key = tolower(operation_id)
+| join kind=leftouter sessions on livy_key
+| extend matched = isnotempty(livy_id),
+         est_cu_s = (driver_cores + executor_cores * num_executors) * running_s / 2.0
+| project start_time, end_time, workspace_name, item_name, operation, user_name, status,
+          total_cu_s, est_cu_s, matched, running_s, queued_s, driver_cores, executor_cores,
+          num_executors, is_high_concurrency, job_instance_id, operation_id
+| order by total_cu_s desc

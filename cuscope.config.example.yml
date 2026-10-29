@@ -1,0 +1,37 @@
+# cuscope deployment settings.
+# Copy this file to cuscope.config.yml (git-ignored), fill in your values, then run:
+#   ./infra/deploy.sh
+# Keep it flat: one "key: value" per line, no nesting. GUIDs and lists as plain strings.
+# No secrets belong here. The Function App authenticates with its managed identity.
+
+# --- Azure target -------------------------------------------------------------------
+resource_group: rg-cuscope
+location: centralindia          # use the same region as your Fabric capacity
+prefix: cuscope                 # short prefix for resource names (lowercase, max 8 chars)
+
+# --- What to harvest ----------------------------------------------------------------
+# Comma-separated Fabric capacity IDs (the GUID after /capacities/ in the Fabric admin URL).
+capacity_ids: "00000000-0000-0000-0000-000000000000"
+
+# Workspace and semantic model of the installed Microsoft Fabric Capacity Metrics app.
+# Open the semantic model; the URL is /groups/<workspace>/datasets/<dataset>.
+metrics_workspace_id: "00000000-0000-0000-0000-000000000000"
+metrics_dataset_id: "00000000-0000-0000-0000-000000000000"
+
+# UTC_offset you entered when you connected the Capacity Metrics app (0 is recommended).
+metrics_utc_offset: "0"
+# Version of the Capacity Metrics app, recorded with every raw response.
+metrics_app_version: "unknown"
+
+# --- Optional enrichment ------------------------------------------------------------
+# Workspaces whose Spark sessions, jobs and warehouses should be linked to operations.
+# Comma-separated; leave empty to skip enrichment.
+enrich_workspace_ids: ""
+
+# --- Optional load generator (testing only) ------------------------------------------
+# Leave empty unless you deployed loadgen/ (see README). Empty keeps the timer idle.
+loadgen_workspace_id: ""
+loadgen_dataset_id: ""
+
+# --- Retention ----------------------------------------------------------------------
+retention_days: 90

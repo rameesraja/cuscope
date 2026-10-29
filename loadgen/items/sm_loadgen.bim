@@ -1,0 +1,43 @@
+{
+  "compatibilityLevel": 1604,
+  "model": {
+    "culture": "en-US",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "tables": [
+      {
+        "name": "Numbers",
+        "columns": [
+          {
+            "type": "calculatedTableColumn",
+            "name": "Value",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Value]"
+          },
+          {
+            "type": "calculatedTableColumn",
+            "name": "Bucket",
+            "dataType": "int64",
+            "isNameInferred": true,
+            "isDataTypeInferred": true,
+            "sourceColumn": "[Bucket]"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "Numbers",
+            "mode": "import",
+            "source": {
+              "type": "calculated",
+              "expression": "ADDCOLUMNS(GENERATESERIES(1, 200000), \"Bucket\", MOD([Value], 100))"
+            }
+          }
+        ],
+        "measures": [
+          { "name": "Total", "expression": "SUM(Numbers[Value])" }
+        ]
+      }
+    ]
+  }
+}

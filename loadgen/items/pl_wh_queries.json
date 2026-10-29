@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "description": "cuscope load generator: warehouse CTAS passes over the lakehouse table, 0-10 per run. Mood mirrors harvester/cuscope/loadgen.py (shared day regime, 2-hour storm blocks, exponential run size); a random 0-20 minute wait before each run removes the fixed schedule grain. Labels make the queries easy to find in queryinsights.",
+    "activities": [
+      {
+        "name": "jitter",
+        "type": "Wait",
+        "dependsOn": [],
+        "typeProperties": {
+          "waitTimeInSeconds": {
+            "value": "@mod(div(ticks(utcNow()), 10000), 1200)",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "wh_queries",
+        "type": "Script",
+        "dependsOn": [
+          {
+            "activity": "jitter",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "linkedService": {
+          "name": "wh_loadgen",
+          "properties": {
+            "annotations": [],
+            "type": "DataWarehouse",
+            "typeProperties": {
+              "endpoint": "{{WAREHOUSE_ENDPOINT}}",
+              "artifactId": "{{WAREHOUSE_ID}}",
+              "workspaceId": "{{WORKSPACE_ID}}"
+            }
+          }
+        },
+        "typeProperties": {
+          "scripts": [
+            {
+              "type": "NonQuery",
+              "text": "-- Mood: same profile as harvester/cuscope/loadgen.py (UTC-6 local time).\nDECLARE @local datetime2(0) = DATEADD(hour, -6, SYSUTCDATETIME());\nDECLARE @h int = DATEPART(hour, @local);\nDECLARE @doy int = DATEPART(dayofyear, @local);\nDECLARE @bucket int = (@doy * @doy * 31 + @doy * 17) % 101 % 10;\nDECLARE @day float = CASE WHEN DATEDIFF(day, '19000101', @local) % 7 >= 5 THEN 0.3\n                          WHEN @bucket < 2 THEN 0.4 WHEN @bucket < 6 THEN 1.0 WHEN @bucket < 9 THEN 1.8 ELSE 2.6 END;\nDECLARE @hour float = CASE WHEN @h BETWEEN 8 AND 17 THEN 1.5 WHEN @h BETWEEN 18 AND 21 THEN 0.8 ELSE 0.4 END;\nDECLARE @block int = @doy * 12 + @h / 2;\nDECLARE @storm float = CASE WHEN (@block * @block * 31 + @block * 17 + 5) % 101 % 10 = 9 THEN 4.0 ELSE 1.0 END;\n-- Exponential run size (mean 1): mostly small, sometimes huge.\nDECLARE @noise float = -LOG((ABS(CHECKSUM(NEWID())) % 999 + 1) / 1000.0);\nDECLARE @mood float = CASE WHEN @day * @hour * @storm > 8 THEN 8 ELSE @day * @hour * @storm END * @noise;\n-- Stochastic rounding keeps the expected number of passes equal to the mood.\nDECLARE @passes int = FLOOR(@mood + (ABS(CHECKSUM(NEWID())) % 100) / 100.0);\nIF @passes > 10 SET @passes = 10;\nDECLARE @i int = 0;\nWHILE @i < @passes\nBEGIN\n    IF @i = 0\n    BEGIN\n        DROP TABLE IF EXISTS dbo.agg_hourly;\n        CREATE TABLE dbo.agg_hourly AS\n        SELECT CAST(DATEADD(hour, DATEDIFF(hour, 0, event_time), 0) AS datetime2(0)) AS hour_bucket, category, region,\n               COUNT_BIG(*) AS events, SUM(amount) AS amount, SUM(qty) AS qty\n        FROM lh_loadgen.dbo.synthetic_events\n        GROUP BY DATEADD(hour, DATEDIFF(hour, 0, event_time), 0), category, region\n        OPTION (LABEL = 'loadgen_ctas');\n    END\n    ELSE\n    BEGIN\n        -- Extra passes are the ad-hoc analyst work of a busy day: a wider, minute-level rollup.\n        DROP TABLE IF EXISTS dbo.agg_minute;\n        CREATE TABLE dbo.agg_minute AS\n        SELECT CAST(DATEADD(minute, DATEDIFF(minute, 0, event_time), 0) AS datetime2(0)) AS minute_bucket, category,\n               region, COUNT_BIG(*) AS events, COUNT(DISTINCT qty) AS qty_values, SUM(amount) AS amount\n        FROM lh_loadgen.dbo.synthetic_events\n        GROUP BY DATEADD(minute, DATEDIFF(minute, 0, event_time), 0), category, region\n        OPTION (LABEL = 'loadgen_ctas_detail');\n    END\n    SET @i = @i + 1;\nEND"
+            },
+            {
+              "type": "Query",
+              "text": "SELECT TOP 100 category, region, SUM(amount) AS amount\nFROM dbo.agg_hourly\nGROUP BY category, region\nORDER BY amount DESC\nOPTION (LABEL = 'loadgen_top');"
+            }
+          ],
+          "scriptBlockExecutionTimeout": "00:30:00"
+        }
+      }
+    ]
+  }
+}

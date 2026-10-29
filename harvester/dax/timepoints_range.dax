@@ -1,0 +1,18 @@
+// Confirmed 2026-10-04 from the app's Performance Analyzer export and checked against
+// per-operation data. [Avg utilization %] is a RATIO (0.0136 = 1.36% of base capacity), per
+// 30-second timepoint, when filtered to Metric = "CU". KQL multiplies by 100.
+// No interactive/background split measure has been identified yet.
+DEFINE
+    MPARAMETER 'CapacitiesList' = {{ "{capacity_id}" }}
+    VAR __cap = TREATAS({{ "{capacity_id}" }}, 'Capacities'[Capacity Id])
+    VAR __metric = TREATAS({{ "CU" }}, 'Metrics'[Metric])
+    VAR __range = FILTER(ALL('Timepoints'[Timepoint]),
+        'Timepoints'[Timepoint] >= {start} && 'Timepoints'[Timepoint] < {end})
+EVALUATE
+SUMMARIZECOLUMNS(
+    'Timepoints'[Timepoint],
+    __cap,
+    __metric,
+    __range,
+    "cu_ratio", 'All Measures'[Avg utilization %]
+)

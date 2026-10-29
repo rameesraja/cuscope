@@ -1,0 +1,6 @@
+// Spec 6.6 'root-cause by execution time': total CU by the hour the operation actually started.
+FabricOpsLatest()
+| where capacity_id == cap and start_time < t1 and coalesce(end_time, start_time) >= t0
+| summarize total_cu_s = sum(total_cu_s), ops = count()
+    by hour = bin(start_time, 1h), class, workspace_name, item_name, item_kind
+| order by hour asc, total_cu_s desc

@@ -1,0 +1,10 @@
+research/.env
+cuscope.config.yml
+research/output/
+harvester/local_output/
+harvester/local.settings.json
+loadgen/deployed.json
+__pycache__/
+.venv/
+.vscode/
+infra/workbook/.test_body.json

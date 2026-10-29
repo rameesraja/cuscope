@@ -1,0 +1,2 @@
+DEFINE MPARAMETER 'RegionName' = "Default"
+EVALUATE SUMMARIZECOLUMNS('Capacities'[Capacity Id], 'Capacities'[Capacity name])

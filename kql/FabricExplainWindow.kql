@@ -1,0 +1,12 @@
+// Spec 6.6 'explain timepoint T', for any window: smoothed CU each operation contributes to [t0, t1).
+// For a single timepoint use t1 = t0 + 30s.
+let sku = toscalar(FabricSkuCu(cap));
+let budget = todouble(sku) * todouble((t1 - t0) / 1s);
+FabricOpsLatest()
+| where capacity_id == cap and smoothing_start < t1 and smoothing_end_eff > t0
+| extend tp_overlap = todouble((min_of(smoothing_end_eff, t1) - max_of(smoothing_start, t0)) / 30s)
+| extend cu_in_window = total_cu_s / n_tp * tp_overlap
+| summarize cu_in_window = sum(cu_in_window), ops = count()
+    by class, workspace_name, item_name, item_kind, operation
+| extend pct_of_window_budget = round(100.0 * cu_in_window / budget, 2)
+| order by cu_in_window desc

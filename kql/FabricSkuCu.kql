@@ -1,0 +1,5 @@
+// CU of the capacity's current SKU (F2 -> 2, F64 -> 64), from the daily dimension snapshot.
+FabricCapacities_CL
+| where capacity_id =~ cap
+| summarize arg_max(TimeGenerated, sku)
+| project sku_cu = toint(extract(@"(\d+)", 1, sku))

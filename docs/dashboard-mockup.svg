@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 760" width="1140" height="760" font-family="Segoe UI, Helvetica, Arial, sans-serif" role="img" aria-label="Mock-up of the cuscope Azure Workbook: Overview tab with KPI tiles, smoothed utilisation chart, top contributors and harvester health. Illustrative data.">
+  <rect width="1140" height="760" fill="#f3f4f6"/>
+
+  <!-- Header -->
+  <text x="30" y="46" font-size="24" font-weight="700" fill="#111827">Fabric CU attribution</text>
+  <text x="30" y="68" font-size="13" fill="#6b7280">Read from the Capacity Metrics model by the cuscope harvester, outside Fabric. CU figures are CU-seconds.</text>
+  <rect x="930" y="28" width="180" height="26" rx="13" fill="#fef3c7"/>
+  <text x="1020" y="46" font-size="12" font-weight="600" fill="#92400e" text-anchor="middle">Mock-up · illustrative data</text>
+
+  <!-- Parameters -->
+  <g font-size="12" fill="#374151">
+    <text x="30" y="96" fill="#6b7280">Capacity</text>
+    <rect x="30" y="102" width="260" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
+    <text x="42" y="122">fabric-prod (F64)</text><text x="272" y="122" fill="#9ca3af">▾</text>
+    <text x="310" y="96" fill="#6b7280">Time range</text>
+    <rect x="310" y="102" width="180" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
+    <text x="322" y="122">Last 24 hours</text><text x="472" y="122" fill="#9ca3af">▾</text>
+    <text x="510" y="96" fill="#6b7280">Explain window (or brush the chart)</text>
+    <rect x="510" y="102" width="300" height="30" rx="4" fill="#fff" stroke="#d1d5db"/>
+    <text x="522" y="122">14:00 → 16:30 today</text>
+  </g>
+
+  <!-- Tabs -->
+  <g font-size="13">
+    <rect x="30" y="148" width="1080" height="34" rx="6" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="34" y="152" width="96" height="26" rx="4" fill="#dbeafe"/>
+    <text x="82" y="170" text-anchor="middle" font-weight="600" fill="#1d4ed8">Overview</text>
+    <text x="212" y="170" text-anchor="middle" fill="#4b5563">Explain a window</text>
+    <text x="337" y="170" text-anchor="middle" fill="#4b5563">24h background</text>
+    <text x="474" y="170" text-anchor="middle" fill="#4b5563">Root cause by run time</text>
+    <text x="620" y="170" text-anchor="middle" fill="#4b5563">Daily changes</text>
+    <text x="715" y="170" text-anchor="middle" fill="#4b5563">Details</text>
+  </g>
+
+  <!-- KPI tiles: the six tiles of the real workbook's "Summary for the time range" -->
+  <g font-size="12">
+    <rect x="30" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="44" y="236" width="4" height="30" fill="#38bdf8"/>
+    <text x="44" y="222" fill="#6b7280">Average utilisation (%)</text>
+    <text x="56" y="264" font-size="30" font-weight="700" fill="#111827">58.2</text>
+
+    <rect x="212" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="226" y="236" width="4" height="30" fill="#8b5cf6"/>
+    <text x="226" y="222" fill="#6b7280">Peak utilisation (%)</text>
+    <text x="238" y="264" font-size="30" font-weight="700" fill="#111827">87.4</text>
+
+    <rect x="394" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="408" y="236" width="4" height="30" fill="#2dd4bf"/>
+    <text x="408" y="222" fill="#6b7280">Timepoints over 100%</text>
+    <text x="420" y="264" font-size="30" font-weight="700" fill="#111827">0</text>
+
+    <rect x="576" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="590" y="236" width="4" height="30" fill="#fb923c"/>
+    <text x="590" y="222" fill="#6b7280">Background, last 24 h (%)</text>
+    <text x="602" y="264" font-size="30" font-weight="700" fill="#111827">61.0</text>
+
+    <rect x="758" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="772" y="236" width="4" height="30" fill="#2563eb"/>
+    <text x="772" y="222" fill="#6b7280">Harvest errors (24 h)</text>
+    <text x="784" y="264" font-size="30" font-weight="700" fill="#111827">0</text>
+
+    <rect x="940" y="198" width="170" height="82" rx="8" fill="#fff" stroke="#e5e7eb"/>
+    <rect x="954" y="236" width="4" height="30" fill="#9ca3af"/>
+    <text x="954" y="222" fill="#6b7280">Minutes since last harvest</text>
+    <text x="966" y="264" font-size="30" font-weight="700" fill="#111827">3</text>
+  </g>
+
+  <!-- Utilisation chart card -->
+  <rect x="30" y="296" width="1080" height="224" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <text x="46" y="320" font-size="14" font-weight="600" fill="#111827">Smoothed utilisation: background and interactive, reconstructed vs the app</text>
+  <text x="46" y="338" font-size="12" fill="#6b7280">Drag across the chart to set the explain window.</text>
+
+  <!-- axes -->
+  <g stroke="#e5e7eb" stroke-width="1">
+    <line x1="90" y1="470" x2="1050" y2="470"/>
+    <line x1="90" y1="380" x2="1050" y2="380"/>
+  </g>
+  <line x1="90" y1="290" x2="1050" y2="290" stroke="#dc2626" stroke-dasharray="5 4"/>
+  <text x="1054" y="294" font-size="11" fill="#dc2626">100%</text>
+  <g font-size="11" fill="#6b7280" text-anchor="end">
+    <text x="82" y="474">0%</text>
+    <text x="82" y="384">50%</text>
+  </g>
+  <g font-size="11" fill="#6b7280" text-anchor="middle">
+    <text x="90" y="490">00:00</text><text x="250" y="490">04:00</text><text x="410" y="490">08:00</text>
+    <text x="570" y="490">12:00</text><text x="730" y="490">16:00</text><text x="890" y="490">20:00</text><text x="1050" y="490">24:00</text>
+  </g>
+
+  <!-- background area (blue) -->
+  <path d="M90,470 L90,401.6 L170,398 L250,394.4 L330,396.2 L410,389 L490,380 L570,376.4 L650,371 L730,369.2 L810,371 L890,374.6 L970,380 L1050,383.6 L1050,470 Z" fill="#2563eb" fill-opacity="0.35"/>
+  <!-- interactive area (orange) stacked on background -->
+  <path d="M90,401.6 L170,398 L250,394.4 L330,390.8 L410,378.2 L490,362 L570,351.2 L650,317 L730,313.4 L810,335 L890,358.4 L970,371 L1050,378.2 L1050,383.6 L970,380 L890,374.6 L810,371 L730,369.2 L650,371 L570,376.4 L490,380 L410,389 L330,396.2 L250,394.4 L170,398 L90,401.6 Z" fill="#f59e0b" fill-opacity="0.55"/>
+  <!-- app-reported utilisation (dashed) -->
+  <polyline points="90,398 170,394.4 250,390.8 330,390.8 410,378.2 490,362 570,351.2 650,317 730,313.4 810,335 890,358.4 970,371 1050,378.2" fill="none" stroke="#111827" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <!-- brushed explain window -->
+  <rect x="640" y="290" width="110" height="180" fill="#2563eb" fill-opacity="0.12" stroke="#2563eb" stroke-dasharray="3 3"/>
+  <text x="695" y="304" font-size="11" fill="#1d4ed8" text-anchor="middle">explain window</text>
+
+  <!-- legend -->
+  <g font-size="11" fill="#374151">
+    <rect x="46" y="504" width="12" height="8" fill="#2563eb" fill-opacity="0.5"/><text x="64" y="512">Background (smoothed over 24 h)</text>
+    <rect x="260" y="504" width="12" height="8" fill="#f59e0b" fill-opacity="0.7"/><text x="278" y="512">Interactive (5–64 min window)</text>
+    <line x1="460" y1="508" x2="480" y2="508" stroke="#111827" stroke-dasharray="4 3" stroke-width="1.5"/><text x="486" y="512">Capacity Metrics app</text>
+  </g>
+
+  <!-- Top contributors card -->
+  <rect x="30" y="536" width="530" height="200" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <text x="46" y="560" font-size="14" font-weight="600" fill="#111827">Top contributors in the explain window</text>
+  <g font-size="12" fill="#374151">
+    <text x="46" y="590">nb_daily_etl (Spark)</text>
+    <rect x="190" y="578" width="304" height="16" rx="3" fill="#2563eb"/><text x="500" y="591">38%</text>
+    <text x="46" y="620">pl_wh_queries (pipeline)</text>
+    <rect x="190" y="608" width="192" height="16" rx="3" fill="#2563eb"/><text x="388" y="621">24%</text>
+    <text x="46" y="650">sm_sales (semantic model)</text>
+    <rect x="190" y="638" width="136" height="16" rx="3" fill="#f59e0b"/><text x="332" y="651">17%</text>
+    <text x="46" y="680">wh_sales (warehouse)</text>
+    <rect x="190" y="668" width="88" height="16" rx="3" fill="#2563eb"/><text x="284" y="681">11%</text>
+    <text x="46" y="710">all other items</text>
+    <rect x="190" y="698" width="80" height="16" rx="3" fill="#9ca3af"/><text x="276" y="711">10%</text>
+  </g>
+
+  <!-- Harvester health card -->
+  <rect x="580" y="536" width="530" height="200" rx="8" fill="#fff" stroke="#e5e7eb"/>
+  <text x="596" y="560" font-size="14" font-weight="600" fill="#111827">Harvester health (last 24 h)</text>
+  <g font-size="12" fill="#6b7280">
+    <text x="596" y="586">job</text><text x="760" y="586">runs</text><text x="880" y="586">rows</text><text x="1000" y="586">errors</text>
+  </g>
+  <line x1="596" y1="594" x2="1094" y2="594" stroke="#e5e7eb"/>
+  <g font-size="12" fill="#374151">
+    <text x="596" y="618">interactive</text><text x="760" y="618">576</text><text x="880" y="618">41,230</text>
+    <circle cx="1008" cy="614" r="5" fill="#16a34a"/><text x="1020" y="618">0</text>
+    <text x="596" y="646">background</text><text x="760" y="646">48</text><text x="880" y="646">18,904</text>
+    <circle cx="1008" cy="642" r="5" fill="#16a34a"/><text x="1020" y="646">0</text>
+    <text x="596" y="674">timepoints</text><text x="760" y="674">48</text><text x="880" y="674">2,880</text>
+    <circle cx="1008" cy="670" r="5" fill="#16a34a"/><text x="1020" y="674">0</text>
+    <text x="596" y="702">enrich</text><text x="760" y="702">48</text><text x="880" y="702">212</text>
+    <circle cx="1008" cy="698" r="5" fill="#f59e0b"/><text x="1020" y="702">1 · pyodbc</text>
+  </g>
+</svg>

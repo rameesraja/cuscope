@@ -1,0 +1,11 @@
+// Harvester runs over the last 24 hours. 'errors' > 0, or 'empty' on every capacity, needs attention.
+FabricHarvestLog_CL
+| where TimeGenerated > ago(24h)
+| summarize runs = count(),
+            errors = countif(status !in ("ok", "empty")),
+            empty = countif(status == "empty"),
+            rows = sum(rows),
+            last_run = max(TimeGenerated),
+            last_error = take_anyif(message, status !in ("ok", "empty"))
+    by job, capacity_id, table_name
+| order by errors desc, job asc

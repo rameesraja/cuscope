@@ -1,0 +1,16 @@
+// Spec 6.6 daily delta: items whose CU yesterday was >= 2x their trailing 7-day median, plus new items.
+let yesterday = startofday(now()) - 1d;
+let daily = FabricOpsLatest()
+    | where capacity_id == cap
+    | summarize cu_s = sum(total_cu_s) by item_id, item_name, item_kind, day = startofday(coalesce(end_time, start_time));
+daily
+| where day == yesterday
+| join kind=leftouter (
+    daily
+    | where day >= yesterday - 7d and day < yesterday
+    | summarize median_cu_s = percentile(cu_s, 50), days_seen = count() by item_id
+  ) on item_id
+| extend ratio = round(cu_s / median_cu_s, 2), is_new = isnull(median_cu_s)
+| where is_new or ratio >= 2
+| project item_name, item_kind, cu_s, median_cu_s, ratio, is_new
+| order by cu_s desc

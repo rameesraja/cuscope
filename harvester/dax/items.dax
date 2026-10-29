@@ -1,0 +1,11 @@
+EVALUATE
+SELECTCOLUMNS(
+    FILTER('Items', 'Items'[Capacity Id] = "{capacity_id}"),
+    "item_id", 'Items'[Item Id],
+    "item_name", 'Items'[Item name],
+    "item_kind", 'Items'[Item kind],
+    "workspace_id", 'Items'[Workspace Id],
+    "workspace_name", 'Items'[Workspace name],
+    "billable_type", 'Items'[Billable type],
+    "virtualised_item", 'Items'[Virtualised item]
+)

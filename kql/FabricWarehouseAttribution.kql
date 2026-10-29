@@ -1,0 +1,39 @@
+// Spec 5.3: split each warehouse billing interval's CU across the queries that overlap it,
+// weighted by allocated CPU (or by overlapped time when CPU is zero). Intervals with no
+// overlapping query are reported as '(idle allocation)'.
+// Billing intervals are keyed on row_key: one Operation Id covers several intervals and items.
+// Requests and intervals meet on (item, minute) so the join stays small; a plain join on item
+// alone pairs every interval with every query of the day and exceeds the memory budget.
+let reqs = FabricWhRequests_CL
+    | where todatetime(end_time) > t0 - 1h and todatetime(start_time) < t1 + 1h
+    | summarize arg_max(TimeGenerated, *) by item_id, distributed_statement_id
+    | project wh_item_id = toupper(item_id), distributed_statement_id, login_name,
+              r_start = todatetime(start_time), r_end = todatetime(end_time),
+              cpu = todouble(allocated_cpu_time_ms), command
+    | mv-expand minute = range(bin(r_start, 1m), r_end, 1m) to typeof(datetime);
+let ops = FabricOpsLatest()
+    | where capacity_id == cap and item_kind in~ ("Warehouse", "SQLEndpoint", "SQLAnalyticsEndpoint")
+        and coalesce(end_time, start_time) > t0 and start_time < t1
+    | project row_key, item_id, item_name, i_start = start_time, i_end = end_time, total_cu_s;
+let pairs = ops
+    | mv-expand minute = range(bin(i_start, 1m), i_end, 1m) to typeof(datetime)
+    | join kind=inner reqs on $left.item_id == $right.wh_item_id, minute
+    | where r_start < i_end and r_end > i_start
+    | summarize take_any(item_name, login_name, command, i_start, i_end, r_start, r_end, cpu, total_cu_s)
+        by row_key, distributed_statement_id
+    | extend overlap_s = todouble((min_of(r_end, i_end) - max_of(r_start, i_start)) / 1s),
+             dur_s = max_of(1.0, todouble((r_end - r_start) / 1s))
+    | extend weight = iff(cpu > 0, cpu * overlap_s / dur_s, overlap_s);
+let attributed = pairs
+    | join kind=inner (pairs | summarize w_total = sum(weight) by row_key) on row_key
+    | extend attributed_cu_s = iff(w_total > 0, total_cu_s * weight / w_total, 0.0)
+    | project item_name, login_name, command, distributed_statement_id, attributed_cu_s;
+let idle = ops
+    | join kind=leftanti (pairs | distinct row_key) on row_key
+    | project item_name, login_name = "(idle allocation)", command = "", distributed_statement_id = "",
+              attributed_cu_s = total_cu_s;
+union attributed, idle
+| summarize attributed_cu_s = sum(attributed_cu_s), sql_queries = dcount(distributed_statement_id),
+            sample_command = take_any(substring(command, 0, 300))
+    by item_name, login_name, command_hash = hash(command)
+| order by attributed_cu_s desc

@@ -1,0 +1,5 @@
+local_output/
+__pycache__/
+.venv/
+run_local.py
+local.settings.json

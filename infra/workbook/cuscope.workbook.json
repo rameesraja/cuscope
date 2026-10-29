@@ -1,0 +1,735 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "## Fabric CU attribution\nRead from the Capacity Metrics model by the cuscope harvester (outside Fabric). CU figures are CU-seconds; percentages are of the capacity's base budget."
+      },
+      "name": "title"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "eb19870b-22dc-4d6d-859a-281260c7f2a7",
+            "version": "KqlParameterItem/1.0",
+            "name": "Capacity",
+            "label": "Capacity",
+            "type": 2,
+            "isRequired": true,
+            "queryType": 0,
+            "resourceType": "microsoft.operationalinsights/workspaces",
+            "query": "FabricCapacities_CL\n| summarize arg_max(TimeGenerated, capacity_name, sku) by value = tolower(capacity_id)\n| project value, label = strcat(capacity_name, ' (', sku, ')')",
+            "value": "value::1",
+            "typeSettings": {
+              "showDefault": false
+            },
+            "timeContext": {
+              "durationMs": 2592000000
+            }
+          },
+          {
+            "id": "c4f925d4-a78c-463a-877f-da0c8331b560",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Time range",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 86400000
+            },
+            "typeSettings": {
+              "allowCustom": true,
+              "selectableValues": [
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                }
+              ]
+            }
+          },
+          {
+            "id": "3241b0f6-088f-430c-b83c-99ccd69da5c3",
+            "version": "KqlParameterItem/1.0",
+            "name": "Window",
+            "label": "Explain window (or brush the chart)",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 3600000
+            },
+            "typeSettings": {
+              "allowCustom": true,
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                }
+              ]
+            }
+          },
+          {
+            "id": "50f47bf1-4d74-467a-aa33-a9bdaf3def0a",
+            "version": "KqlParameterItem/1.0",
+            "name": "tab",
+            "type": 1,
+            "value": "overview",
+            "isHiddenWhenLocked": true
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 11,
+      "content": {
+        "version": "LinkItem/1.0",
+        "style": "tabs",
+        "links": [
+          {
+            "id": "bbf16df5-3104-47c1-80b3-02ddcd3f914c",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Overview",
+            "subTarget": "overview",
+            "style": "link"
+          },
+          {
+            "id": "b8b61fbd-bfc8-494b-89cc-4a39522f469e",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Explain a window",
+            "subTarget": "explain",
+            "style": "link"
+          },
+          {
+            "id": "23de4095-54d5-44fa-9be2-b432f205ae9b",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "24h background",
+            "subTarget": "background",
+            "style": "link"
+          },
+          {
+            "id": "a9011b5c-fdbd-4242-bdcd-72b38267bcef",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Root cause by run time",
+            "subTarget": "rootcause",
+            "style": "link"
+          },
+          {
+            "id": "67235b62-3e6b-4fab-9741-2218296ceaf8",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Daily changes",
+            "subTarget": "changes",
+            "style": "link"
+          },
+          {
+            "id": "bb67f68b-7ec0-4812-8c1f-a864851dab04",
+            "cellValue": "tab",
+            "linkTarget": "parameter",
+            "linkLabel": "Details",
+            "subTarget": "details",
+            "style": "link"
+          }
+        ]
+      },
+      "name": "tabs"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nlet app = FabricTimepoints_CL\n    | where capacity_id =~ cap and timepoint between (t0 .. t1)\n    | summarize arg_max(TimeGenerated, metrics) by timepoint\n    | extend p = 100.0 * todouble(metrics.cu_ratio);\nlet a = app | summarize avgp = avg(p), maxp = max(p), over = countif(p > 100);\nlet bg24 = toscalar(FabricBackground24h(cap, now()) | summarize sum(pct_of_daily_budget));\nlet h = FabricHarvestHealth() | summarize errors = sum(errors), last_run = max(last_run);\nunion\n    (a | project Metric = 'Average utilisation (%)', Value = round(avgp, 1), Ord = 1),\n    (a | project Metric = 'Peak utilisation (%)', Value = round(maxp, 1), Ord = 2),\n    (a | project Metric = 'Timepoints over 100%', Value = todouble(over), Ord = 3),\n    (print Metric = 'Background, last 24 h (% of daily budget)', Value = round(todouble(bg24), 1), Ord = 4),\n    (h | project Metric = 'Harvest errors (24 h)', Value = todouble(errors), Ord = 5),\n    (h | project Metric = 'Minutes since last harvest', Value = todouble(datetime_diff('minute', now(), last_run)), Ord = 6)\n| order by Ord asc\n| project Metric, Value",
+              "size": 4,
+              "title": "Summary for the time range",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "tiles",
+              "tileSettings": {
+                "showBorder": true,
+                "titleContent": {
+                  "columnMatch": "Metric",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "Value",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumFractionDigits": 1
+                    }
+                  }
+                }
+              }
+            },
+            "name": "kpis"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nlet budget = todouble(toscalar(FabricSkuCu(cap))) * 30.0;\nlet step = 30s * toint(ceiling(((t1 - t0) / 30s) / 1500.0));\nlet ops = FabricOpsLatest() | where capacity_id == cap;\nlet bg = ops\n    | where class == \"background\" and smoothing_start between ((t0 - 24h) .. t1)\n    | make-series cu = sum(total_cu_s) default = 0 on smoothing_start from bin(t0 - 24h, 30s) to t1 step 30s\n    | extend roll = series_fir(cu, repeat(1, 2880), false, false)\n    | mv-expand timepoint = smoothing_start to typeof(datetime), roll to typeof(double)\n    | where timepoint >= t0\n    | project timepoint, background = 100.0 * roll / 2880.0 / budget;\nlet it = ops\n    | where class == \"interactive\" and smoothing_end > t0 and smoothing_start < t1\n    | extend n = toint(n_tp)\n    | mv-expand k = range(0, n - 1, 1) to typeof(int)\n    | extend timepoint = smoothing_start + k * 30s\n    | where timepoint between (t0 .. t1)\n    | summarize interactive = 100.0 * sum(total_cu_s / n_tp) / budget by timepoint = bin(timepoint, 30s);\nlet app = FabricTimepoints_CL\n    | where capacity_id =~ cap and timepoint between (t0 .. t1)\n    | summarize arg_max(TimeGenerated, metrics) by timepoint\n    | project timepoint, app = 100.0 * todouble(metrics.cu_ratio);\nunion\n    (bg | project timepoint, background, interactive = 0.0, app = real(null)),\n    (it | project timepoint, background = 0.0, interactive, app = real(null)),\n    (app | project timepoint, background = real(null), interactive = real(null), app)\n| summarize background = sum(background), interactive = sum(interactive), app = max(app) by timepoint\n| summarize ['Background %'] = round(avg(background), 2), ['Interactive %'] = round(avg(interactive), 2),\n            ['App utilisation %'] = round(avg(app), 2) by timepoint = bin(timepoint, step)\n| extend ['Reconstructed total %'] = ['Background %'] + ['Interactive %'], ['Throttle limit %'] = 100.0\n| order by timepoint asc",
+              "size": 0,
+              "title": "Smoothed utilisation: background and interactive (reconstructed) vs the app. The red line is the throttling threshold. Drag across the chart to set the explain window.",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart",
+              "timeBrushParameterName": "Window",
+              "timeBrushExportOnlyWhenBrushed": true,
+              "chartSettings": {
+                "ymin": 0,
+                "showMetrics": false,
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Background %",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Interactive %",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Reconstructed total %",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "App utilisation %",
+                    "color": "green"
+                  },
+                  {
+                    "seriesName": "Throttle limit %",
+                    "color": "redBright"
+                  }
+                ]
+              }
+            },
+            "name": "utilisation"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricExplainWindow(cap, w0, w1)\n| summarize cu = sum(cu_in_window) by item = strcat(item_name, ' (', class, ')')\n| top 15 by cu desc",
+              "size": 0,
+              "title": "Top contributors in the explain window",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "name": "overview_top"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "FabricHarvestHealth()",
+              "size": 0,
+              "title": "Harvester health (last 24 h). Errors should be 0.",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "errors",
+                    "formatter": 18,
+                    "formatOptions": {
+                      "thresholdsOptions": "colors",
+                      "thresholdsGrid": [
+                        {
+                          "operator": ">",
+                          "thresholdValue": "0",
+                          "representation": "redBright",
+                          "text": "{0}{1}"
+                        },
+                        {
+                          "operator": "Default",
+                          "representation": "green",
+                          "text": "{0}{1}"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "health"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "overview"
+      },
+      "name": "group-overview"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "What filled the **Explain window**. Smoothed CU: background operations that finished up to 24 h earlier are included, which is what throttling reacts to."
+            },
+            "name": "explain-help"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricExplainWindow(cap, w0, w1)\n| summarize cu = sum(cu_in_window) by item = strcat(item_name, ' (', class, ')')\n| top 15 by cu desc",
+              "size": 0,
+              "title": "Top contributors in the window",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "name": "explain_chart"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricExplainWindow(cap, w0, w1)\n| project class, workspace_name, item_name, item_kind, operation,\n          ['CU (s) in window'] = round(cu_in_window, 2), ['% of window budget'] = pct_of_window_budget,\n          operations = ops",
+              "size": 0,
+              "title": "By item and operation",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "% of window budget",
+                    "formatter": 3,
+                    "formatOptions": {
+                      "palette": "blue"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "explain_items"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricOpsLatest()\n| where capacity_id == cap and smoothing_start < w1 and smoothing_end_eff > w0\n| extend tp_overlap = todouble((min_of(smoothing_end_eff, w1) - max_of(smoothing_start, w0)) / 30s)\n| summarize ['CU (s) in window'] = round(sum(total_cu_s / n_tp * tp_overlap), 2), operations = count()\n    by user_name, class\n| order by ['CU (s) in window'] desc",
+              "size": 0,
+              "title": "By user",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "explain_users"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "explain"
+      },
+      "name": "group-explain"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "Background operations completed in the last 24 h, as a share of the daily budget. This total drives background rejection and surge protection."
+            },
+            "name": "background-help"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricBackground24h(cap, now())\n| project item_name, ['% of daily budget'] = pct_of_daily_budget\n| top 15 by ['% of daily budget'] desc",
+              "size": 0,
+              "title": "Share of daily budget by item",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "name": "background_chart"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricBackground24h(cap, now())\n| project workspace_name, item_name, item_kind, ['CU (s) last 24h'] = round(total_cu_s, 1),\n          operations = ops, ['% of daily budget'] = pct_of_daily_budget",
+              "size": 0,
+              "title": "Detail",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "% of daily budget",
+                    "formatter": 3,
+                    "formatOptions": {
+                      "palette": "blue"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "background_items"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "background"
+      },
+      "name": "group-background"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "CU by the hour each operation **actually ran**, not when it was smoothed in. Use this to find the batch job behind a later spike. The ten biggest items are shown; the rest are grouped as *other items*."
+            },
+            "name": "rootcause-help"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nlet top_items = FabricRootCauseByHour(cap, t0, t1)\n    | summarize s = sum(total_cu_s) by item_name | top 10 by s desc | project item_name;\nFabricRootCauseByHour(cap, t0, t1)\n| extend item = iff(item_name in (top_items), item_name, 'other items')\n| summarize cu = round(sum(total_cu_s), 1) by hour, item\n| evaluate pivot(item, sum(cu), hour)\n| order by hour asc",
+              "size": 0,
+              "title": "CU (s) by run hour, stacked by item",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "name": "rootcause_chart"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricRootCauseByHour(cap, t0, t1)\n| project hour, class, workspace_name, item_name, item_kind, ['CU (s)'] = round(total_cu_s, 1), operations = ops\n| order by ['CU (s)'] desc",
+              "size": 0,
+              "title": "Detail",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "CU (s)",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "orange"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "rootcause_table"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "rootcause"
+      },
+      "name": "group-rootcause"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 1,
+            "content": {
+              "json": "Items whose CU yesterday was well above their 7-day median, and items seen for the first time. A **ratio** of 2 means the item used double its usual amount."
+            },
+            "name": "changes-help"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricDailyDelta(cap)\n| project item_name, item_kind, ['CU (s) yesterday'] = round(cu_s, 1),\n          ['7-day median'] = round(median_cu_s, 1), ratio, is_new",
+              "size": 4,
+              "title": "Items that doubled yesterday vs their 7-day median, and new items",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "ratio",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "redBright"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible",
+              "noDataMessage": "No item doubled yesterday, and no new items appeared."
+            },
+            "name": "changes_table"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nlet in_range = FabricOpsLatest()\n    | where capacity_id == cap\n    | extend day = startofday(coalesce(end_time, start_time))\n    | where day >= startofday(ago(13d));\nlet top_items = in_range | summarize s = sum(total_cu_s) by item_name | top 10 by s desc | project item_name;\nin_range\n| extend item = iff(item_name in (top_items), item_name, 'other items')\n| summarize cu = round(sum(total_cu_s), 1) by day = format_datetime(day, 'yyyy-MM-dd'), item\n| evaluate pivot(item, sum(cu), day)\n| order by day asc",
+              "size": 0,
+              "title": "Daily CU (s) by item, last 14 days",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "barchart"
+            },
+            "name": "changes_trend"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "changes"
+      },
+      "name": "group-changes"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricOpsLatest()\n| where capacity_id == cap and start_time < w1 and coalesce(end_time, start_time) >= w0\n| project start_time, end_time, class, item_name, item_kind, operation, user_name, status,\n          ['Total CU (s)'] = round(total_cu_s, 2), ['Duration (s)'] = duration_s, operation_id\n| order by ['Total CU (s)'] desc\n| take 500",
+              "size": 0,
+              "title": "Operations in the explain window (top 500 by CU)",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "Total CU (s)",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "orange"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "details_ops"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricSparkAttribution(cap, t0, t1)\n| project start_time, end_time, item_name, operation, user_name, status,\n          ['Total CU (s)'] = round(total_cu_s, 1), ['Linked to Livy session'] = matched,\n          ['Running (s)'] = running_s, ['Queued (s)'] = queued_s, job_instance_id, operation_id",
+              "size": 0,
+              "title": "Spark operations linked to Livy sessions",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "details_spark"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricWarehouseAttribution(cap, t0, t1)\n| project item_name, login_name, ['Attributed CU (s)'] = round(attributed_cu_s, 2), ['SQL queries'] = sql_queries,\n          sample_command",
+              "size": 0,
+              "title": "Warehouse CU split across SQL queries",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "table",
+              "gridSettings": {
+                "filter": true,
+                "formatters": [
+                  {
+                    "columnMatch": "Attributed CU (s)",
+                    "formatter": 8,
+                    "formatOptions": {
+                      "palette": "orange"
+                    }
+                  }
+                ]
+              },
+              "exportToExcelOptions": "visible"
+            },
+            "name": "details_warehouse"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "let cap = '{Capacity}';\nlet t0 = {TimeRange:start};\nlet t1 = {TimeRange:end};\nlet w0 = {Window:start};\nlet w1 = {Window:end};\nFabricReconstructionCheck(cap, w0, w1)\n| project timepoint, ['App %'] = model_pct, ['Reconstructed %'] = recon_pct, ['Difference'] = diff_pct",
+              "size": 0,
+              "title": "Validation: reconstructed vs app utilisation in the explain window",
+              "timeContext": {
+                "durationMs": 2592000000
+              },
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "visualization": "timechart",
+              "noDataMessage": "No app timepoints in this window yet. They are harvested hourly and lag 1-2 hours: pick an explain window that ended at least 2 hours ago."
+            },
+            "name": "validation"
+          }
+        ]
+      },
+      "conditionalVisibility": {
+        "parameterName": "tab",
+        "comparison": "isEqualTo",
+        "value": "details"
+      },
+      "name": "group-details"
+    }
+  ],
+  "fallbackResourceIds": [
+    "__WORKSPACE_RESOURCE_ID__"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

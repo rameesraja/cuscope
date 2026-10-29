@@ -1,0 +1,26 @@
+// Column names confirmed against the installed app on 2026-10-03. Start/End are the smoothing
+// window. Item and workspace names are not in this table; KQL joins them from FabricItems_CL.
+DEFINE
+    MPARAMETER 'TimePoint' = {timepoint}
+    MPARAMETER 'CapacitiesList' = {{ "{capacity_id}" }}
+EVALUATE
+SELECTCOLUMNS(
+    FILTER('{table}', '{table}'[Capacity Id] = "{capacity_id}"{filters}),
+    "operation_id", '{table}'[Operation Id],
+    "operation", '{table}'[Operation],
+    "user_name", '{table}'[User],
+    "status", '{table}'[Status],
+    "billing_type", '{table}'[Billing type],
+    "start_time", '{table}'[Operation start time],
+    "end_time", '{table}'[Operation end time],
+    "smoothing_start", '{table}'[Start],
+    "smoothing_end", '{table}'[End],
+    "workspace_id", '{table}'[Workspace Id],
+    "item_id", '{table}'[Item],
+    "duration_s", '{table}'[Duration (s)],
+    "total_cu_s", '{table}'[Total CU (s)],
+    "timepoint_cu_s", '{table}'[Timepoint CU (s)],
+    "throttling_s", '{table}'[Throttling (s)],
+    "pct_of_base_capacity", '{table}'[% of base capacity],
+    "capacity_cu_s", '{table}'[Capacity CU (s)]
+)

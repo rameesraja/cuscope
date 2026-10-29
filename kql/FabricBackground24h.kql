@@ -1,0 +1,9 @@
+// Spec 6.6: the 24-hour background percentage at t, by item. This is the number background
+// rejection and surge protection act on.
+let sku = toscalar(FabricSkuCu(cap));
+FabricOpsLatest()
+| where capacity_id == cap and class == "background"
+    and smoothing_start > t - 24h and smoothing_start <= t
+| summarize total_cu_s = sum(total_cu_s), ops = count() by workspace_name, item_name, item_kind
+| extend pct_of_daily_budget = round(100.0 * total_cu_s / (todouble(sku) * 86400.0), 2)
+| order by total_cu_s desc

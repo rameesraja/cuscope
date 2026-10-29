@@ -1,0 +1,229 @@
+{
+  "properties": {
+    "description": "cuscope load generator: a sequential ForEach of Copy runs (DataMovement meter) plus a ForEach of Wait activities (ActivityRun meter). Mirrors harvester/cuscope/loadgen.py: shared day regime, 2-hour storm blocks (3 extra copies, 4x fan-out), a random 0-20 minute wait before each run. Fan-out is up to 34 items at weekends, 94/164/244 on normal/heavy/overload weekdays.",
+    "activities": [
+      {
+        "name": "jitter",
+        "type": "Wait",
+        "dependsOn": [],
+        "typeProperties": {
+          "waitTimeInSeconds": {
+            "value": "@mod(div(ticks(utcNow()), 10000), 1200)",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "set_bucket",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "jitter",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "variableName": "bucket",
+          "value": {
+            "value": "@string(mod(mod(add(mul(mul(dayOfYear(addHours(utcNow(), -6)), dayOfYear(addHours(utcNow(), -6))), 31), mul(dayOfYear(addHours(utcNow(), -6)), 17)), 101), 10))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "set_storm",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "set_bucket",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "variableName": "storm",
+          "value": {
+            "value": "@string(if(equals(mod(mod(add(add(mul(mul(add(mul(dayOfYear(addHours(utcNow(), -6)), 12), div(int(formatDateTime(addHours(utcNow(), -6), 'HH')), 2)), add(mul(dayOfYear(addHours(utcNow(), -6)), 12), div(int(formatDateTime(addHours(utcNow(), -6), 'HH')), 2))), 31), mul(add(mul(dayOfYear(addHours(utcNow(), -6)), 12), div(int(formatDateTime(addHours(utcNow(), -6), 'HH')), 2)), 17)), 5), 101), 10), 9), 4, 1))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "set_scale",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "set_storm",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "variableName": "scale",
+          "value": {
+            "value": "@string(mul(if(or(equals(dayOfWeek(addHours(utcNow(), -6)), 0), equals(dayOfWeek(addHours(utcNow(), -6)), 6)), 30, if(less(int(variables('bucket')), 2), 40, if(less(int(variables('bucket')), 6), 90, if(less(int(variables('bucket')), 9), 160, 240)))), int(variables('storm'))))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "set_copies",
+        "type": "SetVariable",
+        "dependsOn": [
+          {
+            "activity": "set_scale",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "variableName": "copies",
+          "value": {
+            "value": "@string(add(add(if(or(and(greaterOrEquals(int(formatDateTime(addHours(utcNow(), -6), 'HH')), 8), less(int(formatDateTime(addHours(utcNow(), -6), 'HH')), 18)), less(mod(ticks(utcNow()), 100), 50)), 1, 0), if(greater(int(variables('storm')), 1), 3, 0)), if(greaterOrEquals(int(variables('bucket')), 9), 1, 0)))",
+            "type": "Expression"
+          }
+        }
+      },
+      {
+        "name": "copy_rounds",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "set_copies",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "items": {
+            "value": "@range(0, int(variables('copies')))",
+            "type": "Expression"
+          },
+          "isSequential": true,
+          "activities": [
+            {
+              "name": "copy_events",
+              "type": "Copy",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "0.01:00:00",
+                "retry": 0,
+                "retryIntervalInSeconds": 30,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "source": {
+                  "type": "LakehouseTableSource",
+                  "datasetSettings": {
+                    "annotations": [],
+                    "linkedService": {
+                      "name": "lh_loadgen",
+                      "properties": {
+                        "annotations": [],
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "workspaceId": "{{WORKSPACE_ID}}",
+                          "artifactId": "{{LAKEHOUSE_ID}}",
+                          "rootFolder": "Tables"
+                        }
+                      }
+                    },
+                    "type": "LakehouseTable",
+                    "schema": [],
+                    "typeProperties": {
+                      "table": "synthetic_events"
+                    }
+                  }
+                },
+                "sink": {
+                  "type": "LakehouseTableSink",
+                  "tableActionOption": "Overwrite",
+                  "datasetSettings": {
+                    "annotations": [],
+                    "linkedService": {
+                      "name": "lh_loadgen",
+                      "properties": {
+                        "annotations": [],
+                        "type": "Lakehouse",
+                        "typeProperties": {
+                          "workspaceId": "{{WORKSPACE_ID}}",
+                          "artifactId": "{{LAKEHOUSE_ID}}",
+                          "rootFolder": "Tables"
+                        }
+                      }
+                    },
+                    "type": "LakehouseTable",
+                    "schema": [],
+                    "typeProperties": {
+                      "table": "synthetic_events_copy"
+                    }
+                  }
+                },
+                "enableStaging": false,
+                "translator": {
+                  "type": "TabularTranslator",
+                  "typeConversion": true,
+                  "typeConversionSettings": {
+                    "allowDataTruncation": true,
+                    "treatBooleanAsNumber": false
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "orchestration_fanout",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "copy_rounds",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "items": {
+            "value": "@range(1, add(5, mod(div(ticks(utcNow()), 7), int(variables('scale')))))",
+            "type": "Expression"
+          },
+          "isSequential": false,
+          "batchCount": 20,
+          "activities": [
+            {
+              "name": "tick",
+              "type": "Wait",
+              "dependsOn": [],
+              "typeProperties": {
+                "waitTimeInSeconds": 1
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "variables": {
+      "bucket": {
+        "type": "String"
+      },
+      "storm": {
+        "type": "String"
+      },
+      "scale": {
+        "type": "String"
+      },
+      "copies": {
+        "type": "String"
+      }
+    }
+  }
+}
