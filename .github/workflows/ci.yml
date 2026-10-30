@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install system packages
+        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
+      - name: Install dependencies
+        run: pip install -r harvester/requirements.txt ruff
+      - name: Lint
+        run: ruff check --output-format=github .
+      - name: Compile
+        run: python -m compileall -q harvester infra research docs loadgen/deploy_loadgen.py loadgen/interactive_load.py
+      - name: Import harvester modules
+        working-directory: harvester
+        run: python -c "import cuscope.harvest, cuscope.enrich, cuscope.store, cuscope.config"
+      - name: Build workbook
+        run: python infra/workbook/build_workbook.py
+
+  bicep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Bicep
+        run: az bicep build --file infra/main.bicep --stdout > /dev/null
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

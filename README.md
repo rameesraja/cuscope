@@ -1,5 +1,8 @@
 # cuscope: Fabric CU attribution from outside Fabric
 
+[![CI](https://github.com/rameesraja/cuscope/actions/workflows/ci.yml/badge.svg)](https://github.com/rameesraja/cuscope/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 **cuscope answers one question: which operation, item or user is using my Microsoft Fabric capacity?**
 
 It reads per-operation CU data from the Microsoft Fabric Capacity Metrics app, stores it in Azure (Log Analytics), and gives you queries and a workbook that explain any spike, throttling event or daily budget. It runs entirely outside Fabric, so it keeps working when your capacity is throttled or paused.
@@ -229,6 +232,8 @@ Put the resulting IDs in `loadgen_workspace_id` and `loadgen_dataset_id` in `cus
 ## Contributing
 
 Issues and pull requests are welcome. Please do not include tenant IDs, workspace IDs, capacity IDs or secrets in issues, logs or sample data. `research/.env`, `cuscope.config.yml`, `harvester/local_output/` and `loadgen/deployed.json` are git-ignored for that reason.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup and pull request guidelines. This project follows a [Code of Conduct](CODE_OF_CONDUCT.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## License
 

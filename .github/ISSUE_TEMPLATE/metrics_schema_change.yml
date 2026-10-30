@@ -1,0 +1,40 @@
+name: Capacity Metrics app schema change
+description: A harvester job broke after the Capacity Metrics app was updated.
+labels: [metrics-schema]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this when a job fails after an app update, typically because a table or column in the metrics model was renamed. **Anonymise everything you paste.**
+  - type: input
+    id: new-version
+    attributes:
+      label: New app version
+    validations:
+      required: true
+  - type: input
+    id: last-working-version
+    attributes:
+      label: Last working app version
+  - type: dropdown
+    id: job
+    attributes:
+      label: Failing job
+      options:
+        - interactive
+        - background
+        - timepoints
+        - dimensions
+        - not sure
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output (anonymised)
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: changes
+    attributes:
+      label: Changed table or column names
+      description: If you know them, list old name → new name.

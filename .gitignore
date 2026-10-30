@@ -5,6 +5,7 @@ harvester/local_output/
 harvester/local.settings.json
 loadgen/deployed.json
 __pycache__/
+.ruff_cache/
 .venv/
 .vscode/
 infra/workbook/.test_body.json
