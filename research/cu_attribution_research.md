@@ -2,7 +2,7 @@ Attributing Fabric CU consumption to operations, from outside Fabric
 
 Research findings and reference architecture for an Azure Functions based capacity attribution service
 
-Prepared for: Ramees | Date: 5 September 2026 | Scope: multiple F-SKU capacities, single tenant, all workloads
+Author: Ramees Raja | Date: 5 September 2026 | Scope: multiple F-SKU capacities, single tenant, all workloads
 
 ## Summary
 

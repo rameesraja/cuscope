@@ -36,7 +36,7 @@ Do the steps in order and tick them off. Record every value marked **Record** in
 - [ ] Region: pick the home region from 0.1. Your Azure resources go in the same region later. You can't change this afterwards without deleting items.
 - [ ] Govern → Capacities → **Trial** tab: note the size (F4 or F64) and **Record** the trial end date.
 - [ ] Open the capacity and **Record** the Capacity ID (the GUID after `/capacities/` in the URL).
-- [ ] If the trial is F64, consider switching it to **F4** (Change size). On F4 you can cause throttling deliberately, which you need for the outage tests in section 6.8 of the spec.
+- [ ] If the trial is F64, consider switching it to **F4** (Change size). On F4 you can cause throttling deliberately, which you need for the throttling and outage tests.
 
 #### If the message says "A Fabric trial isn't available for your account"
 1. Admin portal → Tenant settings: turn **Users can create Fabric items** On, and under Help and support settings turn **Users can try Microsoft Fabric paid features** On. Wait 15 minutes.
@@ -77,9 +77,9 @@ Create workspace `ws-loadgen` with type **Fabric Trial**. Keep each job small. T
 - [ ] Optional: **Dataflow Gen2** refresh once a day (to see the staging warehouse meter).
 - [ ] Keep a short log of anything you run by hand (time, item, what). It's your ground truth for validation.
 
-### 1.5 Schema discovery (spec 6.4)
+### 1.5 Schema discovery
 - [ ] Install Power BI Desktop (Microsoft Store).
-- [ ] Get data → Power BI semantic models → the metrics model (live connection). List tables and columns and compare them with the names used in spec 6.4 (`Timepoint Background Detail`, `Capacities[Capacity Id]`, `CapacitiesList`, `Operation Id`, ...). Save the list as `research/metrics_model_schema_<appversion>.md`.
+- [ ] Get data → Power BI semantic models → the metrics model (live connection). List tables and columns and compare them with the names used in the DAX templates in `harvester/dax/` (`Timepoint Background Detail`, `Capacities[Capacity Id]`, `CapacitiesList`, `Operation Id`, ...). Save the list as `research/metrics_model_schema_<appversion>.md`.
 - [ ] Capture the report's own DAX. In the app workspace, download the report (.pbix, live connected) and open it in Desktop → Optimize → **Performance Analyzer** → Start recording → go to the Timepoint detail page → **Copy query** for the detail visuals. If download is blocked, open the report in the browser, press F12 → Network, filter on `query`, and copy the request payload.
 - [ ] Note the exact MPARAMETER names and the hydration query the report sends.
 

@@ -10,10 +10,10 @@ Workbook parameters used in queries: {Capacity}, {TimeRange:start|end}, {Window:
 """
 
 import json
+import shutil
 import subprocess
 import sys
 import uuid
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -357,7 +357,6 @@ def build():
 # ---------------------------------------------------------------------------------------
 
 def test(workspace_customer_id, capacity_id):
-    now = datetime.now(timezone.utc)
     values = {
         "{Capacity}": capacity_id,
         "{TimeRange:start}": "ago(24h)",
@@ -365,7 +364,9 @@ def test(workspace_customer_id, capacity_id):
         "{Window:start}": "ago(3h)",
         "{Window:end}": "ago(2h)",
     }
-    az = r"C:\Program Files\Microsoft SDKs\Azure\CLI2\wbin\az.cmd"
+    az = shutil.which("az") or shutil.which("az.cmd")
+    if not az:
+        sys.exit("Azure CLI not found on PATH. Install it and run `az login` first.")
     failed = 0
     for key, kql in Q.items():
         for k, v in values.items():

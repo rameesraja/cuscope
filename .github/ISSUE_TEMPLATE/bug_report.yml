@@ -1,0 +1,55 @@
+name: Bug report
+description: Something in cuscope does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Anonymise everything you paste.** Remove or replace tenant, capacity, workspace and dataset IDs, secrets, user names and organisation-specific item names.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - harvester
+        - enrichment
+        - KQL
+        - workbook
+        - deployment
+        - loadgen
+        - docs
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. ...
+        2. ...
+  - type: textarea
+    id: error
+    attributes:
+      label: Error output (anonymised)
+      render: text
+  - type: input
+    id: app-version
+    attributes:
+      label: Capacity Metrics app version
+  - type: input
+    id: region-sku
+    attributes:
+      label: Region and capacity SKU
+      placeholder: e.g. West Europe, F4
+  - type: input
+    id: commit
+    attributes:
+      label: cuscope commit
+      description: Output of `git rev-parse --short HEAD`.

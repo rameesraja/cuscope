@@ -1,0 +1,10 @@
+# Tooling configuration only. cuscope is not a package; the harvester is deployed as an Azure Function.
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+# Fabric notebook source: `spark` is injected by the runtime.
+extend-exclude = ["loadgen/items"]
+
+[tool.ruff.lint]
+select = ["F", "E9"]
