@@ -1,6 +1,6 @@
 azure-functions
 azure-identity>=1.17
-azure-storage-blob>=12.20
+azure-storage-blob>=12.31.0
 azure-monitor-ingestion>=1.0.4
 requests>=2.32
 pyodbc>=5.1
